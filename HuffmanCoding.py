@@ -39,17 +39,14 @@ class HuffmanCoding:
             self.generate_huffman_codes(root.right, prefix + "1")
     
     def display_codes(self):
-        print("Huffman Codes:")
-        for char, code in self.codes.items():
-            print(f"'{char}' = {code}")
-    
+        return self.codes  # Return the codes dictionary instead of printing
+
     def compress_file(self, input_file, output_file):
         with open(input_file, "r") as f:
             text = f.read()
         
         root = self.build_huffman_tree(text)
         self.generate_huffman_codes(root)
-        self.display_codes()
         
         encoded_text = "".join(self.codes[char] for char in text)
         padding = 8 - len(encoded_text) % 8
@@ -63,8 +60,7 @@ class HuffmanCoding:
             f.write(bytes([padding]))  # Store padding at start
             f.write(bytes(byte_array))
             
-        print(f"Compressed file saved as {output_file}")
-        return root
+        return root  # Return the root for decompression
     
     def decompress_file(self, input_file, output_file, root):
         with open(input_file, "rb") as f:

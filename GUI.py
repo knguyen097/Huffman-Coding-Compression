@@ -17,47 +17,47 @@ def open_file():
         selected_file_label.config(text=f"Selected file: {file_path}")
         process_file(file_path)
 
+def open_file_to_decode():
+    file_path = fd.askopenfilename(title="Select a File", filetypes=[("Binary files", "*.bin"), ("All files", "*.*")])
+    if file_path:
+        huffman_decoding(file_path)
 
 def process_file(file_path):
-    #file processing logic goes here
-
-    #put the contents of the file into the file_text widget
     try:
         with open(file_path, 'r') as file:
             file_content = file.read()
             file_text.delete(1.0, tk.END)
             file_text.insert(tk.END, file_content)
-    #erorr handling
     except Exception as e:
         selected_file_label.config(text=f"Error reading file: {e}")
-    
-    #2nd, perform Huffman encoding and display the result
-    
-    hc.compress_file(file_path, "compressed.bin")
+        return
 
-    ## Display codes doesn't work with the GUI
-    ## provide a fix when possible
-    huffman_text.insert("1.0", hc.display_codes())
+    # Perform Huffman encoding and display the result
+    try:
+        root = hc.compress_file(file_path, "compressed.bin")
+        huffman_text.delete(1.0, tk.END)
+        huffman_text.insert("1.0", "\n".join(f"'{char}': {code}" for char, code in hc.codes.items()))
+        selected_file_label.config(text="File compressed successfully!")
+        return root  # Return the root for decompression
+    except Exception as e:
+        selected_file_label.config(text=f"Error during compression: {e}")
 
+def huffman_decoding(file_path):
+    try:
+        root = process_file(file_path)  # Rebuild the Huffman tree
+        hc.decompress_file("compressed.bin", "decompressed.txt", root)
+        with open("decompressed.txt", "r") as f:
+            decoded_text = f.read()
+            decode_text.delete("1.0", tk.END)
+            decode_text.insert("1.0", decoded_text)
+        selected_file_label.config(text="File decompressed successfully!")
+    except Exception as e:
+        selected_file_label.config(text=f"Error during decompression: {e}")
 
-
-#when button is pressed, perform huffman decoding and display the result
-def huffman_decoding():
-    #huffman decoding logic goes here
-
-    #get the bin file and decompress it
-
-    ##not sure what the root should be
-    hc.decompress_file("compressed.bin", "decompressed.txt", hc.root)
-    
-    #when done, display the result in the decode_text widget
-    with open("decompressed.txt", "r") as f:
-        decoded_text = f.read()
-        decode_text.delete("1.0", tk.END)
-        decode_text.insert("1.0", decoded_text)
-    
 #instantiate the HuffmanCoding class
 hc = HuffmanCoding()
+
+#-----------------------------Main GUI-----------------------------------
 
 #create root window
 root = tk.Tk()
@@ -94,7 +94,7 @@ huffman_text = scrolledtext.ScrolledText(root, height=7, width=80, wrap=tk.WORD)
 huffman_text.pack(padx=5, pady=5)
 
 #Huffman decoding button
-decode_button = ttk.Button(root, text="Decode", command=huffman_decoding)
+decode_button = ttk.Button(root, text="Decode", command=open_file_to_decode)
 decode_button.pack(padx=5, pady=5)
 
 #Text widget to display Huffman decoding
