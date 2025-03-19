@@ -3,11 +3,11 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 
-# Import your HuffmanCoding class from backend
+# Importing the HuffmanCoding class from backend
 from HuffmanCoding import HuffmanCoding
 
 huffman = HuffmanCoding()
-root_node = None   # Will store the Huffman tree root for decoding
+root_node = None  
 
 def open_file():
     file_path = fd.askopenfilename(
@@ -28,7 +28,6 @@ def process_file(file_path):
         file_text.delete(1.0, tk.END)
         file_text.insert(tk.END, file_content)
 
-        # --- HUFFMAN ENCODING LOGIC ---
         # Build the Huffman tree
         root_node = huffman.build_huffman_tree(file_content)
         # Generate Huffman codes
@@ -66,7 +65,7 @@ def huffman_decoding():
 
         if current_node.char is not None:
             decoded_str += current_node.char
-            current_node = root_node  # Reset for next character
+            current_node = root_node 
     
 
     decode_text.delete(1.0, tk.END)
