@@ -63,25 +63,30 @@ class HuffmanCoding:
         return root  # Return the root for decompression
     
     def decompress_file(self, input_file, output_file, root):
-        with open(input_file, "rb") as f:
-            padding = ord(f.read(1))  # Read padding
-            byte_data = f.read()
-        
-        binary_string = "".join(f"{byte:08b}" for byte in byte_data)
-        binary_string = binary_string[:-padding]  # Remove padding
-        
-        decoded_text = ""
-        node = root
-        for bit in binary_string:
-            node = node.left if bit == "0" else node.right
-            if node.char is not None:
-                decoded_text += node.char
-                node = root
-        
-        with open(output_file, "w") as f:
-            f.write(decoded_text)
-        
-        print(f"Decompressed file saved as {output_file}")
+        try:
+            with open(input_file, "rb") as f:
+                padding = ord(f.read(1))  # Read padding
+                byte_data = f.read()
+            
+            binary_string = "".join(f"{byte:08b}" for byte in byte_data)
+            binary_string = binary_string[:-padding]  # Remove padding
+            
+            decoded_text = []
+            node = root
+            for bit in binary_string:
+                node = node.left if bit == "0" else node.right
+                if node.char is not None:
+                    decoded_text.append(node.char)
+                    node = root
+            
+            with open(output_file, "w") as f:
+                f.write("".join(decoded_text))
+            
+            print(f"Decompressed file saved as {output_file}")
+        except FileNotFoundError:
+            print(f"Error: File {input_file} not found.")
+        except Exception as e:
+            print(f"Error during decompression: {e}")
 
 if __name__ == "__main__":
     input_txt = "input.txt"

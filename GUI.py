@@ -1,4 +1,6 @@
-#simple python GUI
+#GUI by Salvador Rios
+
+import os
 
 import tkinter as tk
 from tkinter import ttk
@@ -9,18 +11,18 @@ from tkinter.messagebox import showinfo
 import HuffmanCoding
 from HuffmanCoding import *
 
+#-----------------------------Helper Functions--------------------------------
 
+# Global variable to store the initial file path
+initial_file_path = None
 
 def open_file():
+    global initial_file_path
     file_path = fd.askopenfilename(title="Select a File", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
     if file_path:
+        initial_file_path = file_path  # Store the file path
         selected_file_label.config(text=f"Selected file: {file_path}")
         process_file(file_path)
-
-def open_file_to_decode():
-    file_path = fd.askopenfilename(title="Select a File", filetypes=[("Binary files", "*.bin"), ("All files", "*.*")])
-    if file_path:
-        huffman_decoding(file_path)
 
 def process_file(file_path):
     try:
@@ -42,22 +44,30 @@ def process_file(file_path):
     except Exception as e:
         selected_file_label.config(text=f"Error during compression: {e}")
 
-def huffman_decoding(file_path):
+def file_decoding():
+    global initial_file_path
+
+    root = process_file(initial_file_path)
     try:
-        root = process_file(file_path)  # Rebuild the Huffman tree
-        hc.decompress_file("compressed.bin", "decompressed.txt", root)
-        with open("decompressed.txt", "r") as f:
-            decoded_text = f.read()
-            decode_text.delete("1.0", tk.END)
-            decode_text.insert("1.0", decoded_text)
-        selected_file_label.config(text="File decompressed successfully!")
+        # Use the stored initial file path if available
+        if initial_file_path:
+            root = process_file(initial_file_path)
+            hc.decompress_file("compressed.bin", "decompressed.txt", root)
+            with open("decompressed.txt", "r") as f:
+                decoded_text = f.read()
+                decode_text.delete("1.0", tk.END)
+                decode_text.insert("1.0", decoded_text)
+            selected_file_label.config(text="File decompressed successfully!")
+        else:
+            selected_file_label.config(text="Error: No initial file selected for decoding.")
     except Exception as e:
         selected_file_label.config(text=f"Error during decompression: {e}")
 
 #instantiate the HuffmanCoding class
 hc = HuffmanCoding()
+file_name = ''
 
-#-----------------------------Main GUI-----------------------------------
+#-----------------------------Main GUI Code-----------------------------------
 
 #create root window
 root = tk.Tk()
@@ -94,7 +104,7 @@ huffman_text = scrolledtext.ScrolledText(root, height=7, width=80, wrap=tk.WORD)
 huffman_text.pack(padx=5, pady=5)
 
 #Huffman decoding button
-decode_button = ttk.Button(root, text="Decode", command=open_file_to_decode)
+decode_button = ttk.Button(root, text="Decode", command=file_decoding)
 decode_button.pack(padx=5, pady=5)
 
 #Text widget to display Huffman decoding
