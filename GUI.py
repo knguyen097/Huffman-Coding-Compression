@@ -73,22 +73,22 @@ file_name = ''
 root = tk.Tk()
 root.title("Huffman App")
 root.geometry("900x700")
-root.config(background = "white")
+root.config(background = "#0d398b")
 
 #Title
-title_lbl = tk.Label(root, text="Huffman Coding Compression Tool", font=("Arial", 16))
+title_lbl = tk.Label(root, text="Huffman Coding Compression Tool", font=("Arial", 16, "bold", "underline"), bg="#0d398b", fg="white")
 title_lbl.pack(padx=5, pady=5)
 
 #Open file button
-open_button = ttk.Button(root, text="Open File", command=open_file)
+open_button = tk.Button(root, text="Open File", command=open_file)
 open_button.pack(padx=5, pady=5)
 
 #Label to display selected file
-selected_file_label = ttk.Label(root, text="No file selected", wraplength=200)
+selected_file_label = tk.Label(root, text="No file selected", wraplength=200, background="#0d398b", font=("Arial", 10, "italic"), fg="white")
 selected_file_label.pack()
 
 #File contents label
-lbl = tk.Label(root, text="File Contents:")
+lbl = tk.Label(root, text="File Contents:", bg="#0d398b", font=("Arial", 14, "bold"), fg="white")
 lbl.pack(padx=5, pady=5)
 
 #Text widget to display file contents
@@ -96,7 +96,7 @@ file_text = scrolledtext.ScrolledText(root, height=7, width=80, wrap=tk.WORD)
 file_text.pack(padx=5, pady=5)
 
 #Huffman encoding label
-huffman_lbl = tk.Label(root, text="Huffman Encoding:")
+huffman_lbl = tk.Label(root, text="Huffman Encoding:", bg="#0d398b", font=("Arial", 14, "bold"), fg="white")
 huffman_lbl.pack(padx=5, pady=5)
 
 #Text widget to display Huffman encoding
@@ -104,7 +104,7 @@ huffman_text = scrolledtext.ScrolledText(root, height=7, width=80, wrap=tk.WORD)
 huffman_text.pack(padx=5, pady=5)
 
 #Huffman decoding button
-decode_button = ttk.Button(root, text="Decode", command=file_decoding)
+decode_button = tk.Button(root, text="Decode", bg="#456093", fg="white",command=file_decoding)
 decode_button.pack(padx=5, pady=5)
 
 #Text widget to display Huffman decoding
